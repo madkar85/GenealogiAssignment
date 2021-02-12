@@ -7,7 +7,7 @@ namespace GenealogiAssignment
 {
     class SQLDatabase
     {
-
+        //adress till databasen
         internal string ConnectionString { get; set; } = @"Data Source=.\SQLExpress;Integrated Security=true;database={0}";
 
         internal string DatabaseName { get; set; } = "Genealogy";
