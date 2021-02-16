@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 
 namespace GenealogiAssignment
 {
@@ -8,7 +9,7 @@ namespace GenealogiAssignment
         {
             var db = new SQLDatabase();
 
-            db.DropDatabase("Genealogy");
+            db.DropDatabase("Genealogy");  //körs om man har databasen sen tidigare
             db.CreateDatabase("Genealogy", true);
             db.CreateTable("FamilyTree",
                     @"ID int NOT NULL IDENTITY (1,1),
@@ -24,16 +25,54 @@ namespace GenealogiAssignment
                 LastName = "Jagekrans",
                 BirthDate = "20190702",
                 DeathDate = " ",
-                Mother = 0,
-                Father = 0,
+                Mother = -1,
+                Father = -1,
+
+            }; 
+
+            var Madeleine = new Person
+            {
+                FirstName = "Madeleine",
+                LastName = "Karlsson",
+                BirthDate = "19851231",
+                DeathDate = " ",
+                Mother = -1,
+                Father = -1,
+
 
             };
 
+            
+            var Mikael = new Person
+            {
+                FirstName = "Mikael",
+                LastName = "Jagekrans",
+                BirthDate = "19891012",
+                DeathDate = " ",
+                Mother = -1,
+                Father = -1,
+
+            }; 
+
             var crud = new CRUD();
 
-            crud.Create(Isabella);
-
            
+            crud.Create(Isabella);
+            crud.Create(Madeleine);
+            crud.Create(Mikael);
+            var person = crud.Read("Isabella");
+            crud.AddMother(Isabella, Madeleine);
+            crud.AddFather(Isabella, Mikael);
+            person = crud.Read(Isabella);
+
+            Print(person);
+
+        }
+
+        
+        private static void Print(Person person)
+        {
+            Console.WriteLine($"{person.Id}, {person.FirstName}, {person.LastName}, {person.BirthDate}, {person.DeathDate}, {person.Mother}, {person.Father}");
         }
     }
 }

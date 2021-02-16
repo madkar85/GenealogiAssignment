@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace GenealogiAssignment
@@ -42,7 +44,7 @@ namespace GenealogiAssignment
                 using (var cnn = new SqlConnection(connString))
                 {
                     cnn.Open();
-                    using(var command = new SqlCommand(sqlString, cnn))
+                    using (var command = new SqlCommand(sqlString, cnn))
                     {
                         SetParameters(parameters, command);
                         rowsAffected = command.ExecuteNonQuery();
@@ -66,7 +68,35 @@ namespace GenealogiAssignment
             }
         }
 
+        internal DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
+        {
+            var dt = new DataTable();
+            var connString = string.Format(ConnectionString, DatabaseName);
+            try
+            {
+                using var cnn = new SqlConnection(connString);
+                cnn.Open();
+                using var command = new SqlCommand(sqlString, cnn);
+                SetParameters(parameters, command);
+                try
+                {
+                    using (var adapter = new SqlDataAdapter(command))
+                    {
+                        adapter.Fill(dt);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
 
+            return dt;
+        }
 
     }
 }
