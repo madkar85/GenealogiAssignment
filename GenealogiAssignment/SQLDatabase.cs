@@ -14,6 +14,14 @@ namespace GenealogiAssignment
 
         internal string DatabaseName { get; set; } = "Genealogy";
 
+        internal CRUD CRUD
+        {
+            get => default;
+            set
+            {
+            }
+        }
+
         internal void CreateDatabase(string name, bool OpenNewDatabase = false)
         {
             ExecuteSQL("CREATE DATABASE " + name);

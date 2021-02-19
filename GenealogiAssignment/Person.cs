@@ -19,9 +19,13 @@ namespace GenealogiAssignment
         public int Mother { get; set; }
 
         public int Father { get; set; }
-   
 
-
-
+        internal People People
+        {
+            get => default;
+            set
+            {
+            }
+        }
     }
 }
