@@ -22,17 +22,21 @@ namespace GenealogiAssignment
             }
         }
 
+        //Skapar en databas
         internal void CreateDatabase(string name, bool OpenNewDatabase = false)
         {
             ExecuteSQL("CREATE DATABASE " + name);
             if (OpenNewDatabase) DatabaseName = name;
 
         }
+
+        //Skapa en tabell
         internal void CreateTable(string name, string fields)
         {
             ExecuteSQL($"CREATE TABLE {name} ({fields})");
         }
 
+        //Ta bort databas
         internal void DropDatabase(string name)
         {
             DatabaseName = "Master";
@@ -43,6 +47,7 @@ namespace GenealogiAssignment
             ExecuteSQL("DROP DATABASE " + name);
         }
 
+        //Kör SQL-kommando
         internal long ExecuteSQL(string sqlString, params (string, string)[] parameters)
         {
             long rowsAffected = 0;
@@ -67,7 +72,7 @@ namespace GenealogiAssignment
             return rowsAffected;
         }
 
-        //
+        //Sätter parametrar
         private void SetParameters((string, string)[] parameters, SqlCommand command)
         {
             foreach (var item in parameters)
@@ -76,6 +81,7 @@ namespace GenealogiAssignment
             }
         }
 
+        //Kör sökningen i databasen.
         internal DataTable GetDataTable(string sqlString, params (string, string)[] parameters)
         {
             var dt = new DataTable();

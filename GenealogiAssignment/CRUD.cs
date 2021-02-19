@@ -23,6 +23,7 @@ namespace GenealogiAssignment
             }
         }
 
+        //Skapar person i databasen
         public void Create(Person person)
         {
             try
@@ -30,7 +31,7 @@ namespace GenealogiAssignment
                 var connString = string.Format(db.ConnectionString, databaseName);
                 using var cnn = new SqlConnection(connString);
                 cnn.Open();
-                
+
                 var sql = "INSERT INTO FamilyTree (FirstName, LastName, BirthDate, DeathDate, Father, Mother) VALUES (@FirstName, @LastName, @BirthDate, @DeathDate, @Father, @Mother)";
 
                 using var command = new SqlCommand(sql, cnn);
@@ -42,17 +43,17 @@ namespace GenealogiAssignment
                 command.Parameters.AddWithValue("@Mother", person.Mother);
                 command.ExecuteNonQuery();
 
-                //return Read(person);
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
 
-                //throw ex;
             }
 
         }
-     
+
+        //Uppdaterar personen i databasen
         public void Update(Person person)
         {
             db.ExecuteSQL(@"UPDATE FamilyTree 
@@ -73,19 +74,17 @@ namespace GenealogiAssignment
                     );
         }
 
-
+        //Tar bort person ur databasen
         public void Delete(Person person)
         {
-            // börja med sqlkoden
             db.ExecuteSQL($"DELETE FROM FamilyTree WHERE Id = {person.Id}");
         }
 
 
 
-
+        //Kollar om en person finns
         public Person DoesPersonExist(string name)
         {
-            //börja med sqlkod
 
             DataTable dt;
 
@@ -110,9 +109,10 @@ namespace GenealogiAssignment
             return GetPersonObject(dt.Rows[0]);
         }
 
+        //Läser en person
         public Person Read(string name)
         {
-            
+
 
             DataTable dt;
 
@@ -135,11 +135,12 @@ namespace GenealogiAssignment
             return GetPersonObject(dt.Rows[0]);
         }
 
+        //Läser en person, söker efter förnamn
         public Person Read(Person person)
         {
             var row = db.GetDataTable("SELECT * FROM FamilyTree WHERE FirstName LIKE @FirstName", ("@FirstName", person.FirstName));
 
-            //Console.WriteLine(row.Rows.Count);
+
 
             if (row.Rows.Count == 0)
                 return null;
@@ -147,11 +148,12 @@ namespace GenealogiAssignment
             return GetPersonObject(row.Rows[0]);
         }
 
+
         private static Person GetPersonObject(DataRow row)
         {
             return new Person
             {
-                
+
                 FirstName = row["FirstName"].ToString(),
                 LastName = row["LastName"].ToString(),
                 BirthDate = row["BirthDate"].ToString(),
@@ -163,23 +165,25 @@ namespace GenealogiAssignment
 
         }
 
+        //Visar en lista på alla i databasen
         public List<Person> ListOfAllPeople()
         {
             var sql = "SELECT * FROM FamilyTree";
             var data = db.GetDataTable(sql);
 
             var list = new List<Person>();
-            foreach(DataRow row in data.Rows)
+            foreach (DataRow row in data.Rows)
             {
                 list.Add(GetPersonObject(row));
             }
             return list;
         }
 
+        //Visar en lista på alla som börjar på samma bokstav
         public List<Person> ShowAllWithSameStartLetter(string letter)
         {
             string sqlString = @"SELECT * FROM  FamilyTree WHERE FirstName LIKE @FirstName + '%'";
-            
+
             var data = db.GetDataTable(sqlString, ("@FirstName", letter));
             //var data = db.GetDataTable(sqlString);
 
@@ -192,6 +196,7 @@ namespace GenealogiAssignment
             return list;
         }
 
+        //Visar alla som saknar föräldrar
         public List<Person> ShowAllWithoutParents()
         {
 
@@ -205,14 +210,15 @@ namespace GenealogiAssignment
             return list;
         }
 
+        //Visar alla som har samma föräldrar
         public List<Person> ShowSiblings(Person person)
         {
             var dad = person.Father;
             var mom = person.Mother;
-            
+
             var data = db.GetDataTable($"SELECT * FROM  FamilyTree WHERE Father = {dad} AND Mother = {mom};");
 
-            
+
 
             var list = new List<Person>();
             foreach (DataRow row in data.Rows)
@@ -222,11 +228,12 @@ namespace GenealogiAssignment
             return list;
         }
 
+        //Visar en persons mamma
         public List<Person> ShowMother(Person person)
         {
             var mom = person.Mother;
             var data = db.GetDataTable($"SELECT * FROM  FamilyTree WHERE {mom} = ID");
-            
+
 
             var list = new List<Person>();
             foreach (DataRow row in data.Rows)
@@ -236,20 +243,20 @@ namespace GenealogiAssignment
             return list;
         }
 
-      
-            public List<Person> ShowFather(Person person)
+        //Visar en persons pappa
+        public List<Person> ShowFather(Person person)
+        {
+            var dad = person.Father;
+            var data = db.GetDataTable($"SELECT * FROM  FamilyTree WHERE {dad} = ID");
+
+
+            var list = new List<Person>();
+            foreach (DataRow row in data.Rows)
             {
-                var dad = person.Father;
-                var data = db.GetDataTable($"SELECT * FROM  FamilyTree WHERE {dad} = ID");
-
-
-                var list = new List<Person>();
-                foreach (DataRow row in data.Rows)
-                {
-                    list.Add(GetPersonObject(row));
-                }
-                return list;
+                list.Add(GetPersonObject(row));
             }
+            return list;
+        }
 
     }
 }

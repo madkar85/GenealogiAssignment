@@ -20,14 +20,15 @@ namespace GenealogiAssignment
             {
             }
         }
-
+         //Hänvisar till metoden i CRUD-klassen som skapar person i databasen
         public void CreatePerson(Person person)
         {
 
-            // return crud.Create(person);
+            
             crud.Create(person);
         }
 
+        //Hänvisar till metoden i CRUD-klassen som uppdaterar personen med mammas id
         public void AddMother(Person person, Person mother)
         {
               person = crud.Read(person);
@@ -37,6 +38,8 @@ namespace GenealogiAssignment
 
             crud.Update(person);
         }
+
+        //Hänvisar till metoden i CRUD-klassen som uppdaterar personen med pappas id
         public void AddFather(Person person, Person father)
         {
             person = crud.Read(person);

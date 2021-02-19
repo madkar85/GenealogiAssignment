@@ -9,8 +9,6 @@ namespace GenealogiAssignment
         {
             Welcome();
 
-
-
             var crud = new CRUD();
 
             var people = new People(crud);
@@ -32,7 +30,6 @@ namespace GenealogiAssignment
                 Mother = 0,
                 Father = 0,
             };
-
 
             var Mikael = new Person
             {
@@ -158,13 +155,6 @@ namespace GenealogiAssignment
             people.AddMother(Benz, Madeleine);
             
             var person = crud.Read("Isabella");
-            /*
-            person = crud.Read(Isabella);
-            
-            person = crud.Read(Mikael);
-            
-            person = crud.Read(Theo);
-            //Print(person);*/
 
             Console.WriteLine("En lista på alla i databasen");
             var listOfPeople = crud.ListOfAllPeople();
